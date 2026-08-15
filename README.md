@@ -5,7 +5,7 @@ Community [n8n](https://n8n.io) node for [Giggal.ai](https://giggal.ai), the cat
 Add Giggal.ai to any n8n workflow and verify catch-all, accept-all, and SEG-protected email addresses (Proofpoint, Mimecast) with deep mailbox verification. Your bounce rate stays under 3%, and the 30% of every B2B list that other tools flag as risky or unknown becomes deliverable again.
 
 <p align="center">
-  <img src="nodes/Giggal/giggal-logo-wordmark.png" alt="Giggal.ai — Verify Catch-All, Accept-All, and SEG-Protected Emails" width="320"/>
+  <img src="https://raw.githubusercontent.com/giggal-ai/n8n-nodes-giggal/main/nodes/Giggal/giggal-logo-wordmark.png" alt="Giggal.ai — Verify Catch-All, Accept-All, and SEG-Protected Emails" width="320"/>
 </p>
 
 ---
