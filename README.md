@@ -18,7 +18,7 @@ Giggal.ai is a purpose-built [catch-all email verifier](https://giggal.ai) that 
 
 - **Verifies catch-all and accept-all mailboxes** on domains that reject standard SMTP probes, using deep mailbox verification instead of surface heuristics.
 - **Bypasses secure email gateways** like Proofpoint and Mimecast, confirming the real mailbox behind each address instead of returning unknown.
-- **Returns a clear valid or invalid verdict** for every address, so your workflow logic stays simple and your CRM stays clean.
+- **Returns a clear valid or invalid result** for every address, so your workflow logic stays simple and your CRM stays clean.
 - **Keeps bounce rate under 3%** across cold email, drip sequences, and transactional pipelines.
 
 Read more about how [catch-all email verification](https://giggal.ai) works and why it matters for B2B pipelines at [giggal.ai](https://giggal.ai).
@@ -67,7 +67,7 @@ Verifies a single email address per input item using Giggal.ai's deep mailbox ve
 Submits many email addresses as a single asynchronous batch job. Every input item to the node is bundled into one API call, so this scales cleanly to large lists.
 
 - **What it does**: pulls the email from every input item (using the field name you specify), submits one batch job, and returns the `jobId` immediately. Pair with **Job → Get Status** and **Job → Get Results** to fetch the outcome.
-- **Catch-All Rescue is on by default**, so catch-all, accept-all, and SEG-protected addresses get real valid/invalid verdicts instead of the risky/unknown you would get elsewhere.
+- **Catch-All Rescue is on by default**, so catch-all, accept-all, and SEG-protected addresses get real valid/invalid results instead of the risky/unknown you would get elsewhere.
 - **Cost**: 1 credit per email verified.
 - **Idempotency Key** (optional): pass a unique key to make retries safe. Reusing the same key returns the existing job instead of creating a new one.
 - **Returns**: `{ data: { jobId, status, totalEmails, ... }, meta: { acceptedEmails, rejectedEmails, duplicateEmails, invalidEmails } }`.
@@ -125,7 +125,7 @@ Sequential mode is recommended for large sheets so `Continue On Fail` catches in
                                                                     [Loop back to Wait]
 ```
 
-For lists of thousands of emails, batch mode is far more efficient than per-item verify. Submit once with **Verify Batch**, poll **Job Get Status** every 30 seconds until `status = "completed"`, then page through **Job Get Results** to write outcomes back to your sheet. Catch-all rescue is enabled by default so SEG-protected and catch-all addresses come back with real valid/invalid verdicts.
+For lists of thousands of emails, batch mode is far more efficient than per-item verify. Submit once with **Verify Batch**, poll **Job Get Status** every 30 seconds until `status = "completed"`, then page through **Job Get Results** to write outcomes back to your sheet. Catch-all rescue is enabled by default so SEG-protected and catch-all addresses come back with real valid/invalid results.
 
 ### Use inside an AI Agent as a tool
 
@@ -150,13 +150,13 @@ Giggal.ai is a specialised [email verification platform](https://giggal.ai) focu
 - B2B addresses on custom mail infrastructure
 - Freshly-provisioned company domains
 
-Learn more about the catch-all verification methodology and integrations at [giggal.ai](https://giggal.ai). Full API reference is available at [api.giggal.ai](https://api.giggal.ai).
+Learn more about the catch-all verification methodology and integrations at [giggal.ai](https://giggal.ai). Full API reference is available at [giggal.ai/public/docs](https://giggal.ai/public/docs).
 
 ---
 
 ## Support
 
-- 📖 [Developer API documentation](https://api.giggal.ai)
+- 📖 [Developer API documentation](https://giggal.ai/public/docs)
 - 🔌 [All Giggal.ai integrations](https://giggal.ai/integrations)
 - 🐛 [Report a bug](https://github.com/giggal-ai/n8n-nodes-giggal/issues)
 - ✉️ [info@giggal.ai](mailto:info@giggal.ai)

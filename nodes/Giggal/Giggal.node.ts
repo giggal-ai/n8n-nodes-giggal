@@ -121,7 +121,7 @@ export class Giggal implements INodeType {
 				default: '',
 				placeholder: 'name@example.com',
 				description:
-					'The email address to verify. Giggal.ai runs a deep mailbox existence check on every address, including catch-all and SEG-protected domains, returning a clear valid or invalid verdict. Costs 1 credit per call.',
+					'The email address to verify. Giggal.ai runs a deep mailbox existence check on every address, including catch-all and SEG-protected domains, returning a clear valid or invalid result. Costs 1 credit per call.',
 				displayOptions: {
 					show: {
 						resource: ['email'],
