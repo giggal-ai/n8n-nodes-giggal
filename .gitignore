@@ -1,0 +1,14 @@
+node_modules/
+dist/
+*.log
+.DS_Store
+.env
+.env.local
+.tsbuildinfo
+
+# Local-only project memory for Claude Code sessions (never pushed)
+CLAUDE.md
+
+# macOS iCloud sync duplicates
+*\ 2
+*\ 3

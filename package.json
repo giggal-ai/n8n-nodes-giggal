@@ -1,0 +1,83 @@
+{
+	"name": "n8n-nodes-giggal",
+	"version": "0.1.0",
+	"description": "n8n community node for Giggal.ai, the catch-all email verifier. Verify catch-all, accept-all, and SEG-protected email addresses (Proofpoint, Mimecast) with deep mailbox verification. Keep bounce rate under 3% and recover 30% of B2B leads that other email verifiers flag as risky or unknown.",
+	"keywords": [
+		"n8n-community-node-package",
+		"giggal",
+		"giggal.ai",
+		"catch-all email verifier",
+		"catch-all email verification",
+		"verify catch-all emails",
+		"accept-all email verification",
+		"verify accept-all emails",
+		"seg protected email verification",
+		"verify seg protected emails",
+		"secure email gateway verification",
+		"proofpoint email verification",
+		"mimecast email verification",
+		"risky email verifier",
+		"deep mailbox verification",
+		"email verification",
+		"email validation",
+		"verify email",
+		"email verifier",
+		"bulk email verification",
+		"b2b email verification",
+		"email verification api",
+		"reduce bounce rate",
+		"email deliverability"
+	],
+	"license": "MIT",
+	"homepage": "https://giggal.ai",
+	"author": {
+		"name": "Giggal.ai",
+		"email": "info@giggal.ai",
+		"url": "https://giggal.ai"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/giggal-ai/n8n-nodes-giggal.git"
+	},
+	"bugs": {
+		"url": "https://github.com/giggal-ai/n8n-nodes-giggal/issues"
+	},
+	"engines": {
+		"node": ">=20.15"
+	},
+	"main": "index.js",
+	"scripts": {
+		"build": "npx rimraf dist .tsbuildinfo && tsc && gulp build:icons",
+		"dev": "tsc --watch",
+		"format": "prettier nodes credentials --write",
+		"lint": "eslint nodes credentials package.json",
+		"lintfix": "eslint nodes credentials package.json --fix",
+		"prepublishOnly": "npm run build && npm run lint -c .eslintrc.prepublish.js nodes credentials package.json"
+	},
+	"files": [
+		"dist"
+	],
+	"n8n": {
+		"n8nNodesApiVersion": 1,
+		"credentials": [
+			"dist/credentials/GiggalApi.credentials.js"
+		],
+		"nodes": [
+			"dist/nodes/Giggal/Giggal.node.js"
+		]
+	},
+	"devDependencies": {
+		"@types/node": "^20.11.0",
+		"@typescript-eslint/parser": "~8.32.0",
+		"eslint": "^8.57.0",
+		"eslint-plugin-n8n-nodes-base": "^1.16.3",
+		"gulp": "^5.0.0",
+		"n8n-workflow": "*",
+		"prettier": "^3.5.3",
+		"rimraf": "^5.0.5",
+		"typescript": "^5.8.2"
+	},
+	"peerDependencies": {
+		"n8n-workflow": "*"
+	}
+}

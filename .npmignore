@@ -1,0 +1,23 @@
+# Source files (only compiled dist/ ships to npm — see package.json "files")
+credentials/
+nodes/
+*.ts
+
+# Config / tooling
+.editorconfig
+.eslintrc.js
+.eslintrc.prepublish.js
+.prettierrc.js
+tsconfig.json
+gulpfile.js
+
+# Dev artifacts
+node_modules/
+*.log
+.DS_Store
+.env
+.env.local
+.tsbuildinfo
+
+# CI
+.github/
