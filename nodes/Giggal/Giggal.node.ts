@@ -34,7 +34,7 @@ export class Giggal implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'Giggal.ai',
 		name: 'giggal',
-		icon: { light: 'file:giggal.svg', dark: 'file:giggal.svg' },
+		icon: { light: 'file:giggal.svg', dark: 'file:giggal.dark.svg' },
 		group: ['transform'],
 		version: 1,
 		subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',

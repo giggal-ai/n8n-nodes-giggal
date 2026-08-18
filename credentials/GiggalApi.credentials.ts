@@ -27,7 +27,7 @@ export class GiggalApi implements ICredentialType {
 	name = 'giggalApi';
 	displayName = 'Giggal.ai API';
 	documentationUrl = 'https://giggal.ai/integrations/n8n';
-	icon: Icon = { light: 'file:giggal.svg', dark: 'file:giggal.svg' };
+	icon: Icon = { light: 'file:giggal.svg', dark: 'file:giggal.dark.svg' };
 	properties: INodeProperties[] = [
 		{
 			displayName: 'API Key',
