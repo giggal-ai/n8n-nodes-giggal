@@ -1,0 +1,48 @@
+# CI: lint + build sanity check on every push and PR.
+# Fast (~1 min) so it doesn't block iteration. If it goes red on main, the
+# publish workflow will refuse to run against that ref (guard in publish.yml).
+
+name: CI
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main, dev]
+
+jobs:
+  ci:
+    name: Lint + build
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      # `--ignore-scripts` skips native builds (isolated-vm) that we don't
+      # need at CI time and that break on some runners with newer Node.
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
+
+      # Guard: dist/ must contain both the credential and the node file after
+      # build. Catches the ".tsbuildinfo cached partial build" bug that
+      # silently drops credentials/ from the output.
+      - name: Verify dist output
+        run: |
+          test -f dist/credentials/GiggalApi.credentials.js || { echo "Missing credentials JS in dist/"; exit 1; }
+          test -f dist/nodes/Giggal/Giggal.node.js || { echo "Missing node JS in dist/"; exit 1; }
+          test -f dist/nodes/Giggal/giggal.svg || { echo "Missing icon SVG in dist/"; exit 1; }
+          echo "dist/ layout OK"

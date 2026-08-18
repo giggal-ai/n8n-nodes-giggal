@@ -1,0 +1,82 @@
+# Publish to npm with provenance (OIDC signed).
+#
+# Triggered by pushing a tag matching v*.*.* (e.g. v0.1.2). The tag version
+# MUST match the version in package.json — the workflow enforces this to
+# prevent accidentally publishing a mismatched artifact.
+#
+# n8n's community-node verification (creators.n8n.io/nodes) requires that
+# packages published after 2026-05-01 carry a valid npm provenance statement.
+# The `permissions: id-token: write` block below plus `--provenance` on the
+# publish command is what generates it. The green shield on npmjs.com is
+# how n8n's reviewers verify the artifact came from this exact GitHub repo.
+#
+# Manual publish is still possible via workflow_dispatch (Actions tab in
+# GitHub UI) — useful for republishing without cutting a new tag if the
+# tagged run failed for infrastructure reasons.
+
+name: Publish
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch: {}
+
+jobs:
+  publish:
+    name: Publish to npm
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    # Required by `npm publish --provenance` to request an OIDC ID token
+    # from GitHub. Without id-token: write, npm rejects the publish with
+    # "provenance requires a supported CI environment" or similar.
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
+
+      - name: Verify dist output
+        run: |
+          test -f dist/credentials/GiggalApi.credentials.js || { echo "Missing credentials JS"; exit 1; }
+          test -f dist/nodes/Giggal/Giggal.node.js || { echo "Missing node JS"; exit 1; }
+          test -f dist/nodes/Giggal/giggal.svg || { echo "Missing icon SVG"; exit 1; }
+
+      # Guard against version drift: the tag we're publishing from must
+      # match the version field in package.json. Prevents accidentally
+      # publishing v0.1.3 when the tag was v0.1.2 (npm would still accept
+      # it but the release would be confusing).
+      - name: Verify tag matches package.json version
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          PKG_VERSION=$(node -p "require('./package.json').version")
+          if [ "$TAG_VERSION" != "$PKG_VERSION" ]; then
+            echo "Tag version ($TAG_VERSION) does not match package.json version ($PKG_VERSION)"
+            exit 1
+          fi
+          echo "Version match confirmed: $PKG_VERSION"
+
+      - name: Publish to npm
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
