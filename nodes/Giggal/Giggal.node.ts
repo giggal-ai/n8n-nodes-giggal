@@ -10,6 +10,7 @@ import {
 	NodeConnectionType,
 	NodeConnectionTypes,
 	NodeOperationError,
+	sleep,
 } from 'n8n-workflow';
 
 // Public Developer API. Hard-coded intentionally — the base host never
@@ -29,15 +30,11 @@ const RETRY_BASE_DELAY_MS = 500;
 // bound client-side so mistakes get a clear UI error, not an API 400.
 const MAX_RESULTS_LIMIT = 500;
 
-function sleep(ms: number): Promise<void> {
-	return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
 export class Giggal implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'Giggal.ai',
 		name: 'giggal',
-		icon: 'file:giggal.svg',
+		icon: { light: 'file:giggal.svg', dark: 'file:giggal.svg' },
 		group: ['transform'],
 		version: 1,
 		subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
@@ -574,7 +571,12 @@ export class Giggal implements INodeType {
 						],
 					];
 				}
-				throw error;
+				// Wrapping an error that is already a NodeApiError/NodeOperationError
+				// returns the same instance, so nothing is lost here.
+				if (error instanceof NodeApiError) {
+					throw new NodeApiError(this.getNode(), error as unknown as JsonObject);
+				}
+				throw new NodeOperationError(this.getNode(), error as Error);
 			}
 		}
 
@@ -594,7 +596,10 @@ export class Giggal implements INodeType {
 						],
 					];
 				}
-				throw error;
+				if (error instanceof NodeApiError) {
+					throw new NodeApiError(this.getNode(), error as unknown as JsonObject);
+				}
+				throw new NodeOperationError(this.getNode(), error as Error);
 			}
 		}
 
@@ -658,8 +663,8 @@ export class Giggal implements INodeType {
 					});
 					continue;
 				}
-				if (error instanceof NodeApiError || error instanceof NodeOperationError) {
-					throw error;
+				if (error instanceof NodeApiError) {
+					throw new NodeApiError(this.getNode(), error as unknown as JsonObject, { itemIndex });
 				}
 				throw new NodeOperationError(this.getNode(), error as Error, { itemIndex });
 			}

@@ -1,5 +1,6 @@
 import {
 	IAuthenticateGeneric,
+	Icon,
 	ICredentialTestRequest,
 	ICredentialType,
 	INodeProperties,
@@ -26,6 +27,7 @@ export class GiggalApi implements ICredentialType {
 	name = 'giggalApi';
 	displayName = 'Giggal.ai API';
 	documentationUrl = 'https://giggal.ai/integrations/n8n';
+	icon: Icon = { light: 'file:giggal.svg', dark: 'file:giggal.svg' };
 	properties: INodeProperties[] = [
 		{
 			displayName: 'API Key',
