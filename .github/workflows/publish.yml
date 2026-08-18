@@ -4,11 +4,20 @@
 # MUST match the version in package.json — the workflow enforces this to
 # prevent accidentally publishing a mismatched artifact.
 #
-# n8n's community-node verification (creators.n8n.io/nodes) requires that
-# packages published after 2026-05-01 carry a valid npm provenance statement.
-# The `permissions: id-token: write` block below plus `--provenance` on the
-# publish command is what generates it. The green shield on npmjs.com is
-# how n8n's reviewers verify the artifact came from this exact GitHub repo.
+# Since 2026-05-01 n8n requires ALL community nodes to be published from a
+# GitHub Action with a valid npm provenance statement — packages published
+# from a local machine are no longer picked up for the n8n.io/integrations
+# listing or verification. The `permissions: id-token: write` block below is
+# what lets npm generate the attestation. The green shield on npmjs.com is
+# how n8n verifies the artifact came from this exact GitHub repo.
+#
+# Auth (one-time setup, pick one):
+#   A. Trusted Publishing (recommended, no secrets): npmjs.com → package
+#      settings → Publish access → Trusted Publishers → Add a publisher →
+#      GitHub Actions → owner: giggal-ai, repo: n8n-nodes-giggal,
+#      workflow: publish.yml. Provenance is generated automatically.
+#   B. Token: granular npm access token with publish rights on this package,
+#      stored as the NPM_TOKEN repo secret. --provenance added explicitly.
 #
 # Manual publish is still possible via workflow_dispatch (Actions tab in
 # GitHub UI) — useful for republishing without cutting a new tag if the
@@ -43,8 +52,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          registry-url: 'https://registry.npmjs.org'
           cache: 'npm'
+
+      # OIDC trusted publishing needs npm >= 11.5.1; the runner's bundled
+      # npm (10.x on Node 20) is too old.
+      - name: Update npm for trusted publishing
+        run: npm install -g npm@latest
 
       - name: Install dependencies
         run: npm ci --ignore-scripts
@@ -77,6 +90,14 @@ jobs:
           echo "Version match confirmed: $PKG_VERSION"
 
       - name: Publish to npm
-        run: npm publish --provenance --access public
+        # NPM_TOKEN set → token auth with explicit --provenance.
+        # NPM_TOKEN unset → OIDC trusted publishing; provenance is automatic.
+        run: |
+          if [ -n "$NPM_TOKEN" ]; then
+            npm config set //registry.npmjs.org/:_authToken "$NPM_TOKEN"
+            npm publish --provenance --access public
+          else
+            npm publish --access public
+          fi
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
