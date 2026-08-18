@@ -1,6 +1,6 @@
 {
 	"name": "n8n-nodes-giggal",
-	"version": "0.1.1",
+	"version": "0.1.2",
 	"description": "n8n community node for Giggal.ai, the catch-all email verifier. Verify catch-all, accept-all, and SEG-protected email addresses (Proofpoint, Mimecast) with deep mailbox verification. Keep bounce rate under 3% and recover 30% of B2B leads that other email verifiers flag as risky or unknown.",
 	"keywords": [
 		"n8n-community-node-package",
